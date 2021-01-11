@@ -4,18 +4,27 @@ import { addText } from '../redux/actions'
 // URI of backend toolbox test
 const URL = 'https://backend-toolbox-test.alexguerradev.repl.co'
 
-const InputBar = (props) => {
+const InputBar = ({ setLoading, setErr, addText: add }) => {
   const [text, setText] = useState('')
+  const [disabled, setDisabled] = useState(false)
+
   const sendText = async () => {
+    setLoading(true)
+    setDisabled(true)
     const response = await fetch(`${URL}/iecho?text=${text}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
+    if (response.status !== 200) setErr(true)
     const data = await response.json()
-    props.addText({ ...data, original: text })
-    setText('')
+    if (data) {
+      setLoading(false)
+      setDisabled(false)
+      add({ ...data, original: text })
+      setText('')
+    }
   }
 
   return (
@@ -34,7 +43,7 @@ const InputBar = (props) => {
         <button
           type='submit'
           onClick={sendText}
-          disabled={!text || !text.trim()}
+          disabled={disabled || !text || !text.trim()}
           className='btn btn-primary mb-3'
         >
           Send
