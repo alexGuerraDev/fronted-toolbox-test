@@ -13,7 +13,7 @@ After of install the dependencies you will can run in dev mode with
 npm start
 ```
 
-and to create a production version 
+and to create a production version.
 
 ```
 npm run build
